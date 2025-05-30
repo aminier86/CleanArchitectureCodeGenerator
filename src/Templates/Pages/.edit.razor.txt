@@ -39,7 +39,7 @@
     public string? Title { get; private set; }
     [Parameter]
     public int Id { get; set; }
-    MudForm? _{itemnamelowercase}Form;
+    MudForm _{itemnamelowercase}Form = new();
     private bool _saving = false;
     private List<BreadcrumbItem>? _breadcrumbItems;
     private Update{itemname}Command? _model;
@@ -70,8 +70,8 @@
         try
         {
             _saving = true;
-            await _{itemnamelowercase}Form!.Validate().ConfigureAwait(false);
-            if (!_{itemnamelowercase}Form!.IsValid)
+            await _{itemnamelowercase}Form.Validate().ConfigureAwait(false);
+            if (!_{itemnamelowercase}Form.IsValid)
                 return;
             var result = await Mediator.Send(_model);
             result.Match(

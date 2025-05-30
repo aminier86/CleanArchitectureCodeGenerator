@@ -21,7 +21,7 @@
 </MudDialog>
 
 @code {
-    MudForm? _{itemnamelowercase}Form;
+    MudForm _{itemnamelowercase}Form = new();
     private bool _saving = false;
     private bool _savingnew = false;
     [CascadingParameter]
@@ -32,8 +32,8 @@
         try
         {
             _saving = true;
-            await _{itemnamelowercase}Form!.Validate().ConfigureAwait(false);
-            if (!_{itemnamelowercase}Form!.IsValid)
+            await _{itemnamelowercase}Form.Validate().ConfigureAwait(false);
+            if (!_{itemnamelowercase}Form.IsValid)
                 return;
             var result = await Mediator.Send(_model);
             result.Match(data =>
@@ -55,8 +55,8 @@
         try
         {
             _savingnew = true;
-            await _{itemnamelowercase}Form!.Validate().ConfigureAwait(false);
-            if (!_{itemnamelowercase}Form!.IsValid)
+            await _{itemnamelowercase}Form.Validate().ConfigureAwait(false);
+            if (!_{itemnamelowercase}Form.IsValid)
                return;
             var result = await Mediator.Send(_model);
             await result.MatchAsync(async data =>

@@ -31,7 +31,7 @@
 
 @code {
     public string? Title { get; private set; }
-    MudForm? _{itemnamelowercase}Form;
+    MudForm _{itemnamelowercase}Form = new();
     private bool _saving = false;
     private List<BreadcrumbItem>? _breadcrumbItems;
     private Create{itemname}Command _model = new();
@@ -51,8 +51,8 @@
         try
         {
             _saving = true;
-            await _{itemnamelowercase}Form!.Validate().ConfigureAwait(false);
-            if (!_{itemnamelowercase}Form!.IsValid)
+            await _{itemnamelowercase}Form.Validate().ConfigureAwait(false);
+            if (!_{itemnamelowercase}Form.IsValid)
                 return;
             var result = await Mediator.Send(_model);
             result.Match(

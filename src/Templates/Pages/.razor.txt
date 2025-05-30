@@ -211,72 +211,68 @@
     }
     private async Task ShowEditFormDialog(string title, AddEdit{itemname}Command command)
     {
-        var parameters = new DialogParameters<{itemname}FormDialog>
+        return DialogServiceHelper.ShowFormDialogAsync<{itemname}FormDialog, AddEdit{itemname}Command>(
+            title,
+            command,
+            async () =>
             {
-                { x=>x._model,command },
-            };
-        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true };
-        var dialog = await DialogService.ShowAsync<{itemname}FormDialog>(title, parameters, options);
-        var state = await dialog.Result;
-
-        if (state != null && !state.Canceled)
-        {
-            await _{nameofplurallowercase}Grid.ReloadServerData();
-            _selected{nameofPlural}.Clear();
-        }
+                await _{nameofplurallowercase}Grid.ReloadServerData();
+                _selected{nameofPlural}.Clear();
+            });
     }
     private void OnDataGridRowClick({itemname}Dto dto)
     {
         Navigation.NavigateTo($"/pages/{nameofplurallowercase}/view/{dto.Id}");
     }
-    private async Task OnCreate()
+    private Task OnCreate()
     {
         var command = new AddEdit{itemname}Command();
-        await ShowEditFormDialog(L["New {itemname}"], command);
+        return ShowEditFormDialog(L["New {itemname}"], command);
     }
-    private async Task OnClone{itemname}()
+    private Task OnClone{itemname}()
     {
         var dto = _selected{nameofPlural}.First();
         var command = new AddEdit{itemname}Command()
         {
             {fieldAssignmentDefinition}
         };
-        await ShowEditFormDialog(L["Clone {itemname}"], command);
+        return ShowEditFormDialog(L["Clone {itemname}"], command);
     }
-    private async Task OnEdit{itemname}({itemname}Dto dto)
+    private Task OnEdit{itemname}({itemname}Dto dto)
     {
        //var command = Mapper.Map<AddEdit{itemname}Command>(dto);
-       //await ShowEditFormDialog(L["Edit {itemname}"], command);
+       //return ShowEditFormDialog(L["Edit {itemname}"], command);
        Navigation.NavigateTo($"/pages/{nameofplurallowercase}/edit/{dto.Id}");
+       return Task.CompletedTask;
     }
 
-    private async Task OnDelete{itemname}({itemname}Dto dto)
+    private Task OnDelete{itemname}({itemname}Dto dto)
     {
         var contentText = string.Format(ConstantString.DeleteConfirmation, dto.Name);
         var command = new Delete{itemname}Command(new int[] { dto.Id });
-        await DialogServiceHelper.ShowDeleteConfirmationDialogAsync(command, ConstantString.DeleteConfirmationTitle, contentText,async () =>
-        {
-            await InvokeAsync(async () =>
-            {
-                await _{nameofplurallowercase}Grid.ReloadServerData();
-                _selected{nameofPlural}.Clear();
-            });
-        });
+        return Delete{nameofPlural}Internal(command, contentText); 
     }
 
-    private async Task OnDeleteSelected{nameofPlural}()
+    private Task OnDeleteSelected{nameofPlural}()
     {
         var contentText = string.Format(ConstantString.DeleteConfirmWithSelected, _selected{nameofPlural}.Count);
         var command = new Delete{itemname}Command(_selected{nameofPlural}.Select(x => x.Id).ToArray());
-        await DialogServiceHelper.ShowDeleteConfirmationDialogAsync(command, ConstantString.DeleteConfirmationTitle, contentText,async () =>
-        {
-            await InvokeAsync(async () =>
+        return Delete{nameofPlural}Internal(command, contentText);
+    }
+
+    private Task Delete{nameofPlural}Internal(Delete{itemname}Command command, string contentText)
+    {
+        return DialogServiceHelper.ShowDeleteConfirmationDialogAsync(
+            command,
+            ConstantString.DeleteConfirmationTitle,
+            contentText,
+            async () =>
             {
                 await _{nameofplurallowercase}Grid.ReloadServerData();
                 _selected{nameofPlural}.Clear();
             });
-        });
     }
+
 
     private async Task OnExport()
     {
