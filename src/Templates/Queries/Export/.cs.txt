@@ -64,7 +64,6 @@ public class Export{nameofPlural}QueryHandler :
             var result = await _excelService.ExportAsync(data,
                 new Dictionary<string, Func<{itemname}Dto, object?>>()
                 {
-                    // TODO: Define the fields that should be exported, for example:
                     {exportFuncExpression}
                 }
                 , _localizer[_dto.GetClassDescription()]);

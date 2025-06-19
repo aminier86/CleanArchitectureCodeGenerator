@@ -84,9 +84,7 @@ namespace {namespace};
         }
         public async Task<Result<byte[]>> Handle(Create{nameofPlural}TemplateCommand request, CancellationToken cancellationToken)
         {
-            // TODO: Implement Import{nameofPlural}CommandHandler method 
             var fields = new string[] {
-                   // TODO: Define the fields that should be generate in the template, for example:
                    {templateFieldDefinition}
                 };
             var result = await _excelService.CreateTemplateAsync(fields, _localizer[_dto.GetClassDescription()]);

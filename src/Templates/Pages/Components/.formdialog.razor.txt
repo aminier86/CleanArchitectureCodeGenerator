@@ -8,7 +8,6 @@
     <DialogContent>
         <MudForm Model="@_model" @ref="@_{itemnamelowercase}Form" Validation="@(Validator.ValidateValue(_model))">
             <MudGrid>
-                @*TODO: define mudform that should be edit fields, for example:*@
                 {mudFormFieldDefinition}
             </MudGrid>
         </MudForm>
