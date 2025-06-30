@@ -765,7 +765,7 @@ namespace CleanArchitecture.CodeGenerator
 					case "bool":
 						output.Append($"<MudItem xs=\"12\" md=\"6\"> \r\n");
 						output.Append("                ");
-						output.Append($"        <ReadOnlyFieldX6 CheckBox=\"true\" Label=\"@L[_model.GetMemberDescription(x=>x.{property.Name})]\" Value=\"_model.{property.Name}\"></ReadOnlyFieldX6>\r\n");
+						output.Append($"        <ReadOnlyField CheckBox=\"true\" Label=\"@L[_model.GetMemberDescription(x=>x.{property.Name})]\" Value=\"_model.{property.Name}\"></ReadOnlyField>\r\n");
 						output.Append("                ");
 						output.Append($"</MudItem> \r\n");
 						break;
@@ -773,7 +773,7 @@ namespace CleanArchitecture.CodeGenerator
 					case "system.datetime?":
 						output.Append($"<MudItem xs=\"12\" md=\"6\"> \r\n");
 						output.Append("                ");
-						output.Append($"        <ReadOnlyFieldX6 Label=\"@L[_model.GetMemberDescription(x=>x.{property.Name})]\" Value=\"@_model.{property.Name}?.ToString(\"d\")\"></ReadOnlyFieldX6>\r\n");
+						output.Append($"        <ReadOnlyField Label=\"@L[_model.GetMemberDescription(x=>x.{property.Name})]\" Value=\"@_model.{property.Name}?.ToString(\"d\")\"></ReadOnlyField>\r\n");
 						output.Append("                ");
 						output.Append($"</MudItem> \r\n");
 						break;
@@ -781,7 +781,7 @@ namespace CleanArchitecture.CodeGenerator
 					case "system.timespan?":
 						output.Append($"<MudItem xs=\"12\" md=\"6\"> \r\n");
 						output.Append("                ");
-						output.Append($"        <ReadOnlyFieldX6 Label=\"@L[_model.GetMemberDescription(x=>x.{property.Name})]\" Value=\"@_model.{property.Name}?.ToString(\"hh:mm\")\"></ReadOnlyFieldX6>\r\n");
+						output.Append($"        <ReadOnlyField Label=\"@L[_model.GetMemberDescription(x=>x.{property.Name})]\" Value=\"@_model.{property.Name}?.ToString(\"hh:mm\")\"></ReadOnlyField>\r\n");
 						output.Append("                ");
 						output.Append($"</MudItem> \r\n");
 						break;
@@ -790,7 +790,7 @@ namespace CleanArchitecture.CodeGenerator
 						{
 							output.Append($"<MudItem xs=\"12\" md=\"6\"> \r\n");
 							output.Append("                ");
-							output.Append($"        <ReadOnlyFieldX6 Label=\"@L[_model.GetMemberDescription(x=>x.{property.Name})]\" Value=\"_model.{property.Name}\"></ReadOnlyFieldX6>\r\n");
+							output.Append($"        <ReadOnlyField Label=\"@L[_model.GetMemberDescription(x=>x.{property.Name})]\" Value=\"_model.{property.Name}\"></ReadOnlyField>\r\n");
 							output.Append("                ");
 							output.Append($"</MudItem> \r\n");
 						}
@@ -802,7 +802,7 @@ namespace CleanArchitecture.CodeGenerator
 								var enumType = property.Type.CodeName.Split('.').Last();
 								output.Append($"<MudItem xs=\"12\" md=\"6\"> \r\n");
 								output.Append("                ");
-								output.Append($"        <ReadOnlyFieldX6 Label=\"@L[_model.GetMemberDescription(x=>x.{property.Name})]\" Value=\"_model.{property.Name}?.GetDescription()\"></ReadOnlyFieldX6>\r\n");
+								output.Append($"        <ReadOnlyField Label=\"@L[_model.GetMemberDescription(x=>x.{property.Name})]\" Value=\"_model.{property.Name}?.GetDescription()\"></ReadOnlyField>\r\n");
 								output.Append("                ");
 								output.Append($"</MudItem> \r\n");
 							}
