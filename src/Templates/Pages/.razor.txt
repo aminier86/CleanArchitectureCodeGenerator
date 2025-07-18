@@ -210,7 +210,7 @@
         _{nameofplurallowercase}Query.Keyword  = string.Empty;
         await _{nameofplurallowercase}Grid.ReloadServerData();
     }
-    private async Task ShowEditFormDialog(string title, AddEdit{itemname}Command command)
+    private Task ShowEditFormDialog(string title, AddEdit{itemname}Command command)
     {
         return DialogServiceHelper.ShowFormDialogAsync<{itemname}FormDialog, AddEdit{itemname}Command>(
             title,

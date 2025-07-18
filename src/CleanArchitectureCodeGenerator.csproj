@@ -111,9 +111,6 @@
       <DependentUpon>source.extension.vsixmanifest</DependentUpon>
     </Compile>
     <Compile Include="TemplateMap.cs" />
-    <Content Include="Templates\Mappers\.mapper.cs.txt">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <Content Include="Templates\Pages\.create.razor.txt">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -123,7 +120,7 @@
     <Content Include="Templates\Pages\.edit.razor.txt">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\PermissionSet\.cs.txt">
+    <Content Include="Templates\Security\.cs.txt">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Templates\Specifications\ByIdSpecification.cs.txt">

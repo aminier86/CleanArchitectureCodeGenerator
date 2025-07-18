@@ -8,9 +8,8 @@
 //------------------------------------------------------------------------------
 
 
-using System.ComponentModel;
 
-namespace {namespace};
+namespace CleanArchitecture.Blazor.Application.Common.Security;
 
 public static partial class Permissions
 {

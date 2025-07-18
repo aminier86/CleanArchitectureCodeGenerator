@@ -125,7 +125,6 @@ namespace CleanArchitecture.CodeGenerator
 						$"{nameofPlural}/Commands/Import/Import{nameofPlural}CommandValidator.cs",
 						$"{nameofPlural}/Caching/{name}CacheKey.cs",
 						$"{nameofPlural}/DTOs/{name}Dto.cs",
-						/*$"{nameofPlural}/Mappers/{name}Mapper.cs",*/
 						$"{nameofPlural}/EventHandlers/{name}CreatedEventHandler.cs",
 						$"{nameofPlural}/EventHandlers/{name}UpdatedEventHandler.cs",
 						$"{nameofPlural}/EventHandlers/{name}DeletedEventHandler.cs",
@@ -136,7 +135,8 @@ namespace CleanArchitecture.CodeGenerator
 						$"{nameofPlural}/Queries/GetAll/GetAll{nameofPlural}Query.cs",
 						$"{nameofPlural}/Queries/GetById/Get{name}ByIdQuery.cs",
 						$"{nameofPlural}/Queries/Pagination/{nameofPlural}PaginationQuery.cs",
-						
+						$"{nameofPlural}/Security/{nameofPlural}Permissions.cs",
+
 					};
 					foreach (var item in list)
 					{
@@ -150,7 +150,7 @@ namespace CleanArchitecture.CodeGenerator
 						$"Pages/{nameofPlural}/View{name}.razor",
 						$"Pages/{nameofPlural}/{nameofPlural}.razor",
 						$"Pages/{nameofPlural}/Components/{name}FormDialog.razor",
-						$"Pages/{nameofPlural}/Components/{nameofPlural}AdvancedSearchComponent.razor"
+						//$"Pages/{nameofPlural}/Components/{nameofPlural}AdvancedSearchComponent.razor"
 					};
 					foreach (var item in pages)
 					{
