@@ -30,22 +30,23 @@ public class Delete{itemname}CommandHandler :
              IRequestHandler<Delete{itemname}Command, Result>
 
 {
-    private readonly IApplicationDbContext _context;
+    private readonly IApplicationDbContextFactory _dbContextFactory;
     public Delete{itemname}CommandHandler(
-        IApplicationDbContext context)
+        IApplicationDbContextFactory dbContextFactory)
     {
-        _context = context;
+        _dbContextFactory = dbContextFactory;
     }
     public async Task<Result> Handle(Delete{itemname}Command request, CancellationToken cancellationToken)
     {
-        var items = await _context.{nameofPlural}.Where(x=>request.Id.Contains(x.Id)).ToListAsync(cancellationToken);
+        await using var db = await _dbContextFactory.CreateAsync(cancellationToken);
+        var items = await db.{nameofPlural}.Where(x=>request.Id.Contains(x.Id)).ToListAsync(cancellationToken);
         foreach (var item in items)
         {
 		    // raise a delete domain event
 			item.AddDomainEvent(new {itemname}DeletedEvent(item));
-            _context.{nameofPlural}.Remove(item);
+            db.{nameofPlural}.Remove(item);
         }
-        await _context.SaveChangesAsync(cancellationToken);
+        await db.SaveChangesAsync(cancellationToken);
         return await Result.SuccessAsync();
     }
 

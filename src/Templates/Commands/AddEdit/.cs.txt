@@ -37,19 +37,20 @@ public class AddEdit{itemname}Command: ICacheInvalidatorRequest<Result<int>>
 public class AddEdit{itemname}CommandHandler : IRequestHandler<AddEdit{itemname}Command, Result<int>>
 {
     private readonly IMapper _mapper;
-    private readonly IApplicationDbContext _context;
+    private readonly IApplicationDbContextFactory _dbContextFactory;
     public AddEdit{itemname}CommandHandler(
         IMapper mapper,
-        IApplicationDbContext context)
+        IApplicationDbContextFactory dbContextFactory)
     {
         _mapper = mapper;
-        _context = context;
+        _dbContextFactory = dbContextFactory;
     }
     public async Task<Result<int>> Handle(AddEdit{itemname}Command request, CancellationToken cancellationToken)
     {
+        await using var db = await _dbContextFactory.CreateAsync(cancellationToken);
         if (request.Id > 0)
         {
-            var item = await _context.{nameofPlural}.FindAsync(request.Id, cancellationToken);
+            var item = await db.{nameofPlural}.FindAsync(request.Id, cancellationToken);
             if (item == null)
             {
                 return await Result<int>.FailureAsync($"{itemname} with id: [{request.Id}] not found.");
@@ -57,7 +58,7 @@ public class AddEdit{itemname}CommandHandler : IRequestHandler<AddEdit{itemname}
             item = _mapper.Map(request, item);
 			// raise a update domain event
 			item.AddDomainEvent(new {itemname}UpdatedEvent(item));
-            await _context.SaveChangesAsync(cancellationToken);
+            await db.SaveChangesAsync(cancellationToken);
             return await Result<int>.SuccessAsync(item.Id);
         }
         else
@@ -65,8 +66,8 @@ public class AddEdit{itemname}CommandHandler : IRequestHandler<AddEdit{itemname}
             var item = _mapper.Map<{itemname}>(request);
             // raise a create domain event
 			item.AddDomainEvent(new {itemname}CreatedEvent(item));
-            _context.{nameofPlural}.Add(item);
-            await _context.SaveChangesAsync(cancellationToken);
+            db.{nameofPlural}.Add(item);
+            await db.SaveChangesAsync(cancellationToken);
             return await Result<int>.SuccessAsync(item.Id);
         }
        

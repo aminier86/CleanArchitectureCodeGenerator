@@ -36,19 +36,19 @@ public class Update{itemname}Command: ICacheInvalidatorRequest<Result<int>>
 
 public class Update{itemname}CommandHandler : IRequestHandler<Update{itemname}Command, Result<int>>
 {
-    private readonly IApplicationDbContext _context;
+    private readonly IApplicationDbContextFactory _dbContextFactory;
     private readonly IMapper _mapper;
     public Update{itemname}CommandHandler(
         IMapper mapper,
-        IApplicationDbContext context)
+        IApplicationDbContextFactory dbContextFactory)
     {
-        _context = context;
+        _dbContextFactory = dbContextFactory;
         _mapper = mapper;
     }
     public async Task<Result<int>> Handle(Update{itemname}Command request, CancellationToken cancellationToken)
     {
-
-       var item = await _context.{nameofPlural}.FindAsync(request.Id, cancellationToken);
+       await using var db = await _dbContextFactory.CreateAsync(cancellationToken);
+       var item = await db.{nameofPlural}.FindAsync(request.Id, cancellationToken);
        if (item == null)
        {
            return await Result<int>.FailureAsync($"{itemname} with id: [{request.Id}] not found.");
@@ -56,7 +56,7 @@ public class Update{itemname}CommandHandler : IRequestHandler<Update{itemname}Co
        item = _mapper.Map(request, item);
 	    // raise a update domain event
 	   item.AddDomainEvent(new {itemname}UpdatedEvent(item));
-       await _context.SaveChangesAsync(cancellationToken);
+       await db.SaveChangesAsync(cancellationToken);
        return await Result<int>.SuccessAsync(item.Id);
     }
 }

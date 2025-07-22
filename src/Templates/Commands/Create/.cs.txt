@@ -34,21 +34,22 @@ public class Create{itemname}Command: ICacheInvalidatorRequest<Result<int>>
     public class Create{itemname}CommandHandler : IRequestHandler<Create{itemname}Command, Result<int>>
     {
         private readonly IMapper _mapper;
-        private readonly IApplicationDbContext _context;
+        private readonly IApplicationDbContextFactory _dbContextFactory;
         public Create{itemname}CommandHandler(
             IMapper mapper,
-            IApplicationDbContext context)
+            IApplicationDbContextFactory dbContextFactory)
         {
             _mapper = mapper;
-            _context = context;
+            _dbContextFactory = dbContextFactory;
         }
         public async Task<Result<int>> Handle(Create{itemname}Command request, CancellationToken cancellationToken)
         {
+           await using var db = await _dbContextFactory.CreateAsync(cancellationToken);
            var item = _mapper.Map<{itemname}>(request);
            // raise a create domain event
 	       item.AddDomainEvent(new {itemname}CreatedEvent(item));
-           _context.{nameofPlural}.Add(item);
-           await _context.SaveChangesAsync(cancellationToken);
+           db.{nameofPlural}.Add(item);
+           await db.SaveChangesAsync(cancellationToken);
            return  await Result<int>.SuccessAsync(item.Id);
         }
     }

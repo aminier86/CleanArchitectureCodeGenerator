@@ -31,19 +31,20 @@ public class Get{itemname}ByIdQuery : ICacheableRequest<Result<{itemname}Dto>>
 public class Get{itemname}ByIdQueryHandler :
      IRequestHandler<Get{itemname}ByIdQuery, Result<{itemname}Dto>>
 {
-    private readonly IApplicationDbContext _context;
+    private readonly IApplicationDbContextFactory _dbContextFactory;
     private readonly IMapper _mapper;
     public Get{itemname}ByIdQueryHandler(
         IMapper mapper,
-        IApplicationDbContext context)
+        IApplicationDbContextFactory dbContextFactory)
     {
         _mapper = mapper;
-        _context = context;
+        _dbContextFactory = dbContextFactory;
     }
 
     public async Task<Result<{itemname}Dto>> Handle(Get{itemname}ByIdQuery request, CancellationToken cancellationToken)
     {
-        var data = await _context.{nameofPlural}.ApplySpecification(new {itemname}ByIdSpecification(request.Id))
+        await using var db = await _dbContextFactory.CreateAsync(cancellationToken);
+        var data = await db.{nameofPlural}.ApplySpecification(new {itemname}ByIdSpecification(request.Id))
                                                 .ProjectTo<{itemname}Dto>(_mapper.ConfigurationProvider)
                                                 .FirstAsync(cancellationToken) ?? throw new NotFoundException($"{itemname} with id: [{request.Id}] not found.");
         return await Result<{itemname}Dto>.SuccessAsync(data);

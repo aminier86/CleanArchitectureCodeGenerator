@@ -37,18 +37,18 @@ namespace {namespace};
                  IRequestHandler<Create{nameofPlural}TemplateCommand, Result<byte[]>>,
                  IRequestHandler<Import{nameofPlural}Command, Result<int>>
     {
-        private readonly IApplicationDbContext _context;
+        private readonly IApplicationDbContextFactory _dbContextFactory;
         private readonly IStringLocalizer<Import{nameofPlural}CommandHandler> _localizer;
         private readonly IExcelService _excelService;
         private readonly {itemname}Dto _dto = new();
         private readonly IMapper _mapper;
         public Import{nameofPlural}CommandHandler(
-            IApplicationDbContext context,
+            IApplicationDbContextFactory dbContextFactory,
             IMapper mapper,
             IExcelService excelService,
             IStringLocalizer<Import{nameofPlural}CommandHandler> localizer)
         {
-            _context = context;
+            _dbContextFactory = dbContextFactory;
             _localizer = localizer;
             _excelService = excelService;
             _mapper = mapper;
@@ -56,7 +56,7 @@ namespace {namespace};
         #nullable disable warnings
         public async Task<Result<int>> Handle(Import{nameofPlural}Command request, CancellationToken cancellationToken)
         {
-
+           await using var db = await _dbContextFactory.CreateAsync(cancellationToken);
            var result = await _excelService.ImportAsync(request.Data, mappers: new Dictionary<string, Func<DataRow, {itemname}Dto, object?>>
             {
                 {importFuncExpression}
@@ -71,10 +71,10 @@ namespace {namespace};
                         var item = _mapper.Map<{itemname}>(dto);
                         // add create domain events if this entity implement the IHasDomainEvent interface
 				        // item.AddDomainEvent(new {itemname}CreatedEvent(item));
-                        await _context.{nameofPlural}.AddAsync(item, cancellationToken);
+                        await db.{nameofPlural}.AddAsync(item, cancellationToken);
                     }
                  }
-                 await _context.SaveChangesAsync(cancellationToken);
+                 await db.SaveChangesAsync(cancellationToken);
                  return await Result<int>.SuccessAsync(result.Data.Count());
            }
            else
