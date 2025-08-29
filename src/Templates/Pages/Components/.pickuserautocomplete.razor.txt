@@ -1,0 +1,77 @@
+﻿@using CleanArchitecture.Blazor.Application.Features.Identity.DTOs
+@using CleanArchitecture.Blazor.Application.Features.Identity.Queries.GetUsers
+@inherits MudComponentBase
+@inject IStringLocalizer<PickUserAutocomplete> L
+
+<MudAutocomplete T="ApplicationUserDto"
+                 Label="@Label"
+                 @bind-Value="@Value"
+                 SearchFunc="@SearchUsers"
+                 ToStringFunc="@(u => u?.DisplayName ?? "")"
+                 Dense="@Dense"
+                 Margin="@Margin"
+                 Variant="@Variant"
+                 Required="@Required"
+                 RequiredError="@RequiredError"
+                 For="@For"
+                 ResetValueOnEmptyText="true"
+                 CoerceText="false"
+                 CoerceValue="false"
+                 AdornmentIcon="@Icons.Material.Filled.Person"
+                 AdornmentColor="Color.Primary"
+                 Clearable="true">
+    <ItemTemplate Context="user">
+        <div class="d-flex align-center">
+            @if (!string.IsNullOrEmpty(user.ProfilePictureDataUrl))
+            {
+                <MudAvatar Image="@user.ProfilePictureDataUrl" Size="Size.Small" Class="mr-3" />
+            }
+            else
+            {
+                <MudAvatar Size="Size.Small" Class="mr-3">
+                    <MudIcon Icon="@Icons.Material.Filled.Person" />
+                </MudAvatar>
+            }
+            <div>
+                <div class="mud-typography mud-typography-body1">@user.DisplayName</div>
+                <div class="mud-typography mud-typography-caption">@user.Email</div>
+            </div>
+        </div>
+    </ItemTemplate>
+</MudAutocomplete>
+
+@code {
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public ApplicationUserDto? Value { get; set; }
+    [Parameter] public EventCallback<ApplicationUserDto?> ValueChanged { get; set; }
+    [Parameter] public Expression<Func<ApplicationUserDto?>>? For { get; set; }
+    [Parameter] public bool Dense { get; set; } = false;
+    [Parameter] public Margin Margin { get; set; } = Margin.Normal;
+    [Parameter] public Variant Variant { get; set; } = Variant.Text;
+    [Parameter] public bool Required { get; set; } = false;
+    [Parameter] public string? RequiredError { get; set; }
+
+    private async Task<IEnumerable<ApplicationUserDto>> SearchUsers(string searchText)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(searchText) || searchText.Length < 2)
+                return new List<ApplicationUserDto>();
+
+            var query = new GetUsersQuery
+            {
+                Keyword = searchText,
+                PageNumber = 1,
+                PageSize = 10
+            };
+
+            var result = await Mediator.Send(query);
+            return result.Data ?? new List<ApplicationUserDto>();
+        }
+        catch (Exception)
+        {
+            // Handle error gracefully
+            return new List<ApplicationUserDto>();
+        }
+    }
+}
