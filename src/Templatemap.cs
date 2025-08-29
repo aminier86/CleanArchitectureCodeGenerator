@@ -723,7 +723,22 @@ namespace CleanArchitecture.CodeGenerator
 						output.Append($"</MudItem> \r\n");
 						break;
 					default:
-						if (property.Type.IsKnownType)
+						// Handle ApplicationUser/ApplicationUserDto fields with autocomplete
+						if (property.Type.CodeName.Contains("ApplicationUser") || 
+							property.Type.CodeName.Contains("ApplicationUserDto") ||
+							property.Name.Equals("Owner", StringComparison.OrdinalIgnoreCase) ||
+							property.Name.Equals("AssignedTo", StringComparison.OrdinalIgnoreCase) ||
+							property.Name.Equals("CreatedBy", StringComparison.OrdinalIgnoreCase) ||
+							property.Name.Equals("ModifiedBy", StringComparison.OrdinalIgnoreCase) ||
+							property.Name.EndsWith("User", StringComparison.OrdinalIgnoreCase))
+						{
+							output.Append($"<MudItem xs=\"12\" md=\"6\"> \r\n");
+							output.Append("                ");
+							output.Append($"        <PickUserAutocomplete Label=\"@L[_model.GetMemberDescription(x=>x.{property.Name})]\" @bind-Value=\"_model.{property.Name}\" For=\"@(() => _model.{property.Name})\" Required=\"false\" RequiredError=\"@L[\"{splitCamelCase(property.Name).ToLower()} is required!\"]\" />\r\n");
+							output.Append("                ");
+							output.Append($"</MudItem> \r\n");
+						}
+						else if (property.Type.IsKnownType)
 						{
 							output.Append($"<MudItem xs=\"12\" md=\"6\"> \r\n");
 							output.Append("                ");
@@ -786,7 +801,22 @@ namespace CleanArchitecture.CodeGenerator
 						output.Append($"</MudItem> \r\n");
 						break;
 					default:
-						if (property.Type.IsKnownType)
+						// Handle ApplicationUser/ApplicationUserDto fields in readonly view
+						if (property.Type.CodeName.Contains("ApplicationUser") || 
+							property.Type.CodeName.Contains("ApplicationUserDto") ||
+							property.Name.Equals("Owner", StringComparison.OrdinalIgnoreCase) ||
+							property.Name.Equals("AssignedTo", StringComparison.OrdinalIgnoreCase) ||
+							property.Name.Equals("CreatedBy", StringComparison.OrdinalIgnoreCase) ||
+							property.Name.Equals("ModifiedBy", StringComparison.OrdinalIgnoreCase) ||
+							property.Name.EndsWith("User", StringComparison.OrdinalIgnoreCase))
+						{
+							output.Append($"<MudItem xs=\"12\" md=\"6\"> \r\n");
+							output.Append("                ");
+							output.Append($"        <ReadOnlyField Label=\"@L[_model.GetMemberDescription(x=>x.{property.Name})]\" Value=\"_model.{property.Name}?.DisplayName\"></ReadOnlyField>\r\n");
+							output.Append("                ");
+							output.Append($"</MudItem> \r\n");
+						}
+						else if (property.Type.IsKnownType)
 						{
 							output.Append($"<MudItem xs=\"12\" md=\"6\"> \r\n");
 							output.Append("                ");
